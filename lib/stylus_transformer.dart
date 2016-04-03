@@ -20,11 +20,6 @@ class StylusTransformer extends Transformer {
   @override
   Future<dynamic> apply(Transform transform) {
     final Completer<int> completer = new Completer<int>();
-    final File cssFile = new File('web/styles/compc_stylus.css');
-
-    if (!cssFile.existsSync()) cssFile.createSync();
-
-    cssFile.writeAsStringSync('', mode:FileMode.WRITE);
 
     Process.start(
         'node',
@@ -32,8 +27,12 @@ class StylusTransformer extends Transformer {
         workingDirectory: 'web'
     ).then((Process process) {
       process.stdout
-          .transform(UTF8.decoder as StreamTransformer<List<int>, dynamic>)
-          .listen((String css) => cssFile.writeAsStringSync(css, mode:FileMode.APPEND));
+        .transform(UTF8.decoder as StreamTransformer<List<int>, dynamic>)
+        .listen((String css) {
+          print(css);
+          
+          transform.addOutput(new Asset.fromString(new AssetId('taurus_main', 'web/styles/compc_stylus.css'), css));
+        });
 
       process.exitCode.then((int code) => completer.complete(code));
     });

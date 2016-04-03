@@ -9,7 +9,13 @@ class StylusTransformer extends Transformer {
 
   StylusTransformer.asPlugin();
 
-  String get allowedExtensions => ".html";
+  String get allowedExtensions => ".css";
+
+  classifyPrimary(AssetId id) {
+    if (!id.path.endsWith('compc_stylus.css')) return null;
+
+    return p.url.dirname(id.path);
+  }
 
   @override
   Future<dynamic> apply(Transform transform) {
@@ -25,7 +31,7 @@ class StylusTransformer extends Transformer {
         .listen((String css) {
           print(css);
 
-          transform.addOutput(new Asset.fromString(new AssetId('taurus_main', 'web/styles/compc_stylus.css'), css));
+          transform.addOutput(new Asset.fromString(transform.primaryInput.id, css));
         });
 
       process.exitCode.then((int code) => completer.complete(code));

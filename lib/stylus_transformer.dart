@@ -9,7 +9,7 @@ class StylusTransformer extends Transformer {
 
   StylusTransformer.asPlugin();
 
-  String get allowedExtensions => ".css";
+  String get allowedExtensions => ".css .styl";
 
   classifyPrimary(AssetId id) {
     if (!id.path.endsWith('compc_stylus.css')) return null;
@@ -19,29 +19,33 @@ class StylusTransformer extends Transformer {
 
   @override
   Future<dynamic> apply(Transform transform) {
-    final Completer<int> completer = new Completer<int>();
-    String allCss = '';
+    if (transform.primaryInput.id.path.endsWith('compc_stylus.css')) {
+      final Completer<int> completer = new Completer<int>();
+      String allCss = '';
 
-    Process.start(
-        'node',
-        ['C:\\Users\\frank\\AppData\\Roaming\\npm\\node_modules\\stylus\\bin\\stylus', '--import', 'styles/_variables.styl', '--compress', '-p', 'styles'],
-        workingDirectory: 'web'
-    ).then((Process process) {
-      process.stdout
-        .transform(UTF8.decoder as StreamTransformer<List<int>, dynamic>)
-        .listen((String css) {
+      Process.start(
+          'node',
+          ['C:\\Users\\frank\\AppData\\Roaming\\npm\\node_modules\\stylus\\bin\\stylus', '--import', 'styles/_variables.styl', '--compress', '-p', 'styles'],
+          workingDirectory: 'web'
+      ).then((Process process) {
+        process.stdout
+            .transform(UTF8.decoder as StreamTransformer<List<int>, dynamic>)
+            .listen((String css) {
           allCss += css;
         });
 
-      process.exitCode.then((int code) {
-        print('node process terminated with code $code');
+        process.exitCode.then((int code) {
+          print('node process terminated with code $code');
 
-        transform.addOutput(new Asset.fromString(transform.primaryInput.id, allCss));
+          transform.addOutput(new Asset.fromString(transform.primaryInput.id, allCss));
 
-        completer.complete(code);
+          completer.complete(code);
+        });
       });
-    });
 
-    return completer.future;
+      return completer.future;
+    }
+
+    return new Future.value(0);
   }
 }

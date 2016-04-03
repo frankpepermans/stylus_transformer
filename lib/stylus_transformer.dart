@@ -20,7 +20,7 @@ class StylusTransformer extends Transformer {
   @override
   Future<dynamic> apply(Transform transform) {
     final Completer<int> completer = new Completer<int>();
-
+    print('${transform.primaryInput.id.package}:${transform.primaryInput.id.path}');
     Process.start(
         'node',
         ['C:\\Users\\frank\\AppData\\Roaming\\npm\\node_modules\\stylus\\bin\\stylus', '--import', 'styles/_variables.styl', '--compress', '-p', 'styles'],

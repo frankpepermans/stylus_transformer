@@ -1,0 +1,7 @@
+name: stylus_transformer
+description: A pub transformer for Stylus files => css.
+version: 0.0.1
+author: Frank Pepermans <frank@igindo.com>
+
+environment:
+  sdk: '>=1.0.0 <2.0.0'

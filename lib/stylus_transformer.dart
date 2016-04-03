@@ -20,7 +20,8 @@ class StylusTransformer extends Transformer {
   @override
   Future<dynamic> apply(Transform transform) {
     final Completer<int> completer = new Completer<int>();
-    print('${transform.primaryInput.id.package}:${transform.primaryInput.id.path}');
+    String allCss = '';
+
     Process.start(
         'node',
         ['C:\\Users\\frank\\AppData\\Roaming\\npm\\node_modules\\stylus\\bin\\stylus', '--import', 'styles/_variables.styl', '--compress', '-p', 'styles'],
@@ -29,12 +30,16 @@ class StylusTransformer extends Transformer {
       process.stdout
         .transform(UTF8.decoder as StreamTransformer<List<int>, dynamic>)
         .listen((String css) {
-          print(css);
-
-          transform.addOutput(new Asset.fromString(transform.primaryInput.id, css));
+          allCss += css;
         });
 
-      process.exitCode.then((int code) => completer.complete(code));
+      process.exitCode.then((int code) {
+        print('node process terminated with code $code');
+
+        transform.addOutput(new Asset.fromString(transform.primaryInput.id, allCss));
+
+        completer.complete(code);
+      });
     });
 
     return completer.future;

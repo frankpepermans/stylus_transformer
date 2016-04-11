@@ -3,18 +3,32 @@ import 'dart:async';
 import 'dart:convert';
 
 import 'package:barback/barback.dart';
-import 'package:path/path.dart' as p;
+import 'package:path/path.dart' as path;
 
 class StylusTransformer extends Transformer {
 
-  StylusTransformer.asPlugin();
+  String _pathToBinary;
+
+  StylusTransformer(BarbackSettings settings) : super() {
+    const validOptions = const ['stylus_binary'];
+
+    for (var option in settings.configuration.keys) {
+      if (validOptions.contains(option)) continue;
+      throw 'Invalid option ``$option` supplied to polymer transformer. '
+          'The recognized options are ${validOptions.join(' ')}.';
+    }
+
+    _pathToBinary = settings.configuration['stylus_binary'] as String;
+  }
+
+  StylusTransformer.asPlugin(BarbackSettings settings) : this(settings);
 
   String get allowedExtensions => ".css .styl";
 
   classifyPrimary(AssetId id) {
     if (!id.path.endsWith('compc_stylus.css')) return null;
 
-    return p.url.dirname(id.path);
+    return path.url.dirname(id.path);
   }
 
   @override
@@ -25,7 +39,7 @@ class StylusTransformer extends Transformer {
 
       Process.start(
           'node',
-          ['C:\\Users\\frank\\AppData\\Roaming\\npm\\node_modules\\stylus\\bin\\stylus', '--import', 'styles/_variables.styl', '--compress', '-p', 'styles'],
+          [_pathToBinary, '--import', 'styles/_variables.styl', '--compress', '-p', 'styles'],
           workingDirectory: 'web'
       ).then((Process process) {
         process.stdout

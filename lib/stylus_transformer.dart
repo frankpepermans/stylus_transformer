@@ -46,6 +46,10 @@ class StylusTransformer extends Transformer {
             .transform(UTF8.decoder as StreamTransformer<List<int>, dynamic>)
             .listen((String css) {
           allCss += css;
+        }, onError: ([Error error]) {
+          print('node process failed');
+
+          completer.complete(-1);
         });
 
         process.exitCode.then((int code) {

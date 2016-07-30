@@ -14,7 +14,7 @@ class StylusTransformer extends Transformer {
 
     for (var option in settings.configuration.keys) {
       if (validOptions.contains(option)) continue;
-      throw 'Invalid option ``$option` supplied to polymer transformer. '
+      throw 'Invalid option ``$option` supplied to stylus transformer. '
           'The recognized options are ${validOptions.join(' ')}.';
     }
 
@@ -37,9 +37,11 @@ class StylusTransformer extends Transformer {
       final Completer<int> completer = new Completer<int>();
       String allCss = '';
 
+      transform.logger.info('Obtaining Stylus binary from: ${path.absolute(_pathToBinary)}');
+
       Process.start(
           'node',
-          [_pathToBinary, '--import', 'styles/_variables.styl', '--compress', '-p', 'styles'],
+          [path.absolute(_pathToBinary), '--import', 'styles/_variables.styl', '--compress', '-p', 'styles'],
           workingDirectory: 'web'
       ).then((Process process) {
         process.stdout
@@ -59,6 +61,8 @@ class StylusTransformer extends Transformer {
 
           completer.complete(code);
         });
+      }, onError: (error) {
+        transform.logger.error(error.message);
       });
 
       return completer.future;

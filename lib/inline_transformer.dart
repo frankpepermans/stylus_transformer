@@ -25,18 +25,24 @@ class InlineTransformer extends Transformer {
 
   String get allowedExtensions => ".styl";
 
-  //@override Future<bool> isPrimary(AssetId id) => new Future.value(!id.path.startsWith('web/'));
+  classifyPrimary(AssetId id) {
+    if (id.path.startsWith('web/')) return null;
+
+    return path.url.dirname(id.path);
+  }
 
   @override
   Future<dynamic> apply(Transform transform) {
     final Completer<int> completer = new Completer<int>();
+
+    transform.consumePrimary();
 
     Process.start(
         'node',
         [path.absolute(_pathToBinary), '--import', 'web/styles/_variables.styl', '--compress', '-p', transform.primaryInput.id.path]
     ).then((Process process) {
       process.stdout
-        .transform(UTF8.decoder as StreamTransformer<List<int>, dynamic>)
+        .transform(UTF8.decoder)
         .listen((String css) {
           final String newAssetPath = transform.primaryInput.id.path.replaceAll('.styl', '.css');
 

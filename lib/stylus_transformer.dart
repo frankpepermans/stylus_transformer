@@ -25,12 +25,6 @@ class StylusTransformer extends Transformer {
 
   String get allowedExtensions => ".css .styl";
 
-  classifyPrimary(AssetId id) {
-    if (!id.path.endsWith('compc_stylus.css')) return null;
-
-    return path.url.dirname(id.path);
-  }
-
   @override
   Future<dynamic> apply(Transform transform) {
     if (transform.primaryInput.id.path.endsWith('compc_stylus.css')) {
@@ -45,7 +39,7 @@ class StylusTransformer extends Transformer {
           workingDirectory: 'web'
       ).then((Process process) {
         process.stdout
-            .transform(UTF8.decoder as StreamTransformer<List<int>, dynamic>)
+            .transform(UTF8.decoder)
             .listen((String css) {
           allCss += css;
         }, onError: ([Error error]) {
@@ -66,6 +60,8 @@ class StylusTransformer extends Transformer {
       });
 
       return completer.future;
+    } else if (transform.primaryInput.id.path.startsWith('web/styles/')) {
+      transform.consumePrimary();
     }
 
     return new Future.value(0);

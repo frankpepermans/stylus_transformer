@@ -26,7 +26,7 @@ class InlineTransformer extends Transformer {
   String get allowedExtensions => ".styl";
 
   classifyPrimary(AssetId id) {
-    if (id.path.startsWith('web/')) return null;
+    if (id.path.startsWith(new RegExp(r'web[\\/]{1}'))) return null;
 
     return path.url.dirname(id.path);
   }
@@ -39,7 +39,7 @@ class InlineTransformer extends Transformer {
 
     Process.start(
         'node',
-        [path.absolute(_pathToBinary), '--import', 'web/styles/_variables.styl', '--compress', '-p', transform.primaryInput.id.path]
+        [path.absolute(_pathToBinary), '--import', 'web\\styles\\_variables.styl', '--compress', '-p', transform.primaryInput.id.path]
     ).then((Process process) {
       process.stdout
         .transform(UTF8.decoder)
@@ -58,6 +58,8 @@ class InlineTransformer extends Transformer {
       process.exitCode.then(completer.complete);
     }, onError: (error) {
       transform.logger.error(error.message);
+
+      if (error is Error) transform.logger.error(error.stackTrace.toString());
     });
 
     return completer.future;

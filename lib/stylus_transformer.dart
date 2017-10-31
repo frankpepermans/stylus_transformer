@@ -35,7 +35,7 @@ class StylusTransformer extends Transformer {
 
       Process.start(
           'node',
-          [path.absolute(_pathToBinary), '--import', 'styles/_variables.styl', '--compress', '-p', 'styles'],
+          [path.absolute(_pathToBinary), '--import', 'styles\\_variables.styl', '--compress', '-p', 'styles'],
           workingDirectory: 'web'
       ).then((Process process) {
         process.stdout
@@ -57,10 +57,12 @@ class StylusTransformer extends Transformer {
         });
       }, onError: (error) {
         transform.logger.error(error.message);
+
+        if (error is Error) transform.logger.error(error.stackTrace.toString());
       });
 
       return completer.future;
-    } else if (transform.primaryInput.id.path.startsWith('web/styles/')) {
+    } else if (transform.primaryInput.id.path.startsWith('web\\styles\\')) {
       transform.consumePrimary();
     }
 

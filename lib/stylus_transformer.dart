@@ -32,12 +32,10 @@ class StylusTransformer extends Transformer {
       String allCss = '';
 
       transform.logger.info('Obtaining Stylus binary from: ${path.relative(_pathToBinary)}');
-      transform.logger.info('node ${path.relative(_pathToBinary)} --import styles\\_variables.styl --compress -p styles');
 
       Process.start(
           'node',
-          [path.relative(_pathToBinary), '--import', 'styles\\_variables.styl', '--compress', '-p', 'styles'],
-          workingDirectory: 'web'
+          [path.relative(_pathToBinary), '--import', 'web\\styles\\_variables.styl', '--compress', '-p', 'styles']
       ).then((Process process) {
         process.stdout
             .transform(UTF8.decoder)

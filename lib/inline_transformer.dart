@@ -39,7 +39,7 @@ class InlineTransformer extends Transformer {
     Process.start('node', [
       path.relative(_pathToBinary),
       '--import',
-      'web\\styles\\_variables.styl',
+      path.join('web', 'styles', '_variables.styl'),
       '--compress',
       '-p',
       transform.primaryInput.id.path

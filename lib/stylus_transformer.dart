@@ -6,7 +6,6 @@ import 'package:barback/barback.dart';
 import 'package:path/path.dart' as path;
 
 class StylusTransformer extends Transformer {
-
   String _pathToBinary;
 
   StylusTransformer(BarbackSettings settings) : super() {
@@ -31,14 +30,20 @@ class StylusTransformer extends Transformer {
       final Completer<int> completer = new Completer<int>();
       String allCss = '';
 
-      Process.start(
-          'node',
-          [path.relative('..\\$_pathToBinary'), '--import', 'styles\\_variables.styl', '--compress', '-p', 'styles'],
-          workingDirectory: 'web'
-      ).then((Process process) {
-        process.stdout
-            .transform(UTF8.decoder)
-            .listen((String css) {
+      Process
+          .start(
+              'node',
+              [
+                path.relative('..\\$_pathToBinary'),
+                '--import',
+                path.join('styles', '_variables.styl'),
+                '--compress',
+                '-p',
+                'styles'
+              ],
+              workingDirectory: 'web')
+          .then((Process process) {
+        process.stdout.transform(UTF8.decoder).listen((String css) {
           allCss += css;
         }, onError: ([Error error]) {
           transform.logger.info('node process failed!');
@@ -49,7 +54,8 @@ class StylusTransformer extends Transformer {
         process.exitCode.then((int code) {
           transform.logger.info('node process terminated with code $code');
 
-          transform.addOutput(new Asset.fromString(transform.primaryInput.id, allCss));
+          transform.addOutput(
+              new Asset.fromString(transform.primaryInput.id, allCss));
 
           completer.complete(code);
         }).catchError((e, [s]) {

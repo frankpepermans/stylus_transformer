@@ -41,7 +41,7 @@ class StylusTransformer extends Transformer {
                 '-p',
                 'styles'
               ],
-              workingDirectory: 'web')
+              workingDirectory: 'web', runInShell: true)
           .then((Process process) {
         process.stdout.transform(UTF8.decoder).listen((String css) {
           allCss += css;

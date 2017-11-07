@@ -36,10 +36,10 @@ class InlineTransformer extends Transformer {
 
     transform.consumePrimary();
 
-    transform.logger.info('node ${path.absolute(_pathToBinary)} --import styles\\_variables.styl --compress -p styles');
+    transform.logger.info('node ${path.relative(_pathToBinary)} --import styles\\_variables.styl --compress -p styles');
 
     Process.start('node', [
-      '"${path.absolute(_pathToBinary)}"',
+      path.relative(_pathToBinary),
       '--import',
       'web\\styles\\_variables.styl',
       '--compress',

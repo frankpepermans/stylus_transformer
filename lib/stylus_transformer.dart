@@ -17,7 +17,12 @@ class StylusTransformer extends Transformer {
           'The recognized options are ${validOptions.join(' ')}.';
     }
 
-    _pathToBinary = settings.configuration['stylus_binary'] as String;
+    String pathToBinaryTmp = settings.configuration['stylus_binary'] as String;
+
+    pathToBinaryTmp.replaceAll(new RegExp(r'[\\\/]{1}'), '|').split('|');
+
+    _pathToBinary = path.joinAll(
+        pathToBinaryTmp.replaceAll(new RegExp(r'[\\\/]{1}'), '|').split('|'));
   }
 
   StylusTransformer.asPlugin(BarbackSettings settings) : this(settings);
@@ -38,7 +43,7 @@ class StylusTransformer extends Transformer {
       ];
       String allCss = '';
 
-      transform.logger.info('starting process: ${params.join(' ')}');
+      transform.logger.info('starting process: node ${params.join(' ')}');
 
       Process.start('node', params, workingDirectory: 'web').then(
           (Process process) {

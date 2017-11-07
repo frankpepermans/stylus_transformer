@@ -17,7 +17,12 @@ class InlineTransformer extends Transformer {
           'The recognized options are ${validOptions.join(' ')}.';
     }
 
-    _pathToBinary = settings.configuration['stylus_binary'] as String;
+    String pathToBinaryTmp = settings.configuration['stylus_binary'] as String;
+
+    pathToBinaryTmp.replaceAll(new RegExp(r'[\\\/]{1}'), '|').split('|');
+
+    _pathToBinary = path.joinAll(
+        pathToBinaryTmp.replaceAll(new RegExp(r'[\\\/]{1}'), '|').split('|'));
   }
 
   InlineTransformer.asPlugin(BarbackSettings settings) : this(settings);

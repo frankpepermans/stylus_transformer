@@ -28,21 +28,20 @@ class StylusTransformer extends Transformer {
   Future<dynamic> apply(Transform transform) {
     if (transform.primaryInput.id.path.endsWith('compc_stylus.css')) {
       final Completer<int> completer = new Completer<int>();
+      final List<String> params = <String>[
+        path.relative('..\\$_pathToBinary'),
+        '--import',
+        path.join('styles', '_variables.styl'),
+        '--compress',
+        '-p',
+        'styles'
+      ];
       String allCss = '';
 
-      Process
-          .start(
-              'node',
-              [
-                path.relative('..\\$_pathToBinary'),
-                '--import',
-                path.join('styles', '_variables.styl'),
-                '--compress',
-                '-p',
-                'styles'
-              ],
-              workingDirectory: 'web', runInShell: true)
-          .then((Process process) {
+      transform.logger.info('starting process: ${params.join(' ')}');
+
+      Process.start('node', params, workingDirectory: 'web').then(
+          (Process process) {
         process.stdout.transform(UTF8.decoder).listen((String css) {
           allCss += css;
         }, onError: ([Error error]) {

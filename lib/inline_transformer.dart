@@ -43,7 +43,7 @@ class InlineTransformer extends Transformer {
       '--compress',
       '-p',
       transform.primaryInput.id.path
-    ], runInShell: true).then((Process process) {
+    ]).then((Process process) {
       process.stdout.transform(UTF8.decoder).listen((String css) {
         final String newAssetPath =
             transform.primaryInput.id.path.replaceAll('.styl', '.css');

@@ -38,25 +38,27 @@ class StylusTransformer extends Transformer {
           [path.absolute(_pathToBinary), '--import', 'styles\\_variables.styl', '--compress', '-p', 'styles'],
           workingDirectory: 'web'
       ).then((Process process) {
+        transform.logger.info('node ${path.absolute(_pathToBinary)} --import styles\\_variables.styl --compress -p styles');
+
         process.stdout
             .transform(UTF8.decoder)
             .listen((String css) {
           allCss += css;
         }, onError: ([Error error]) {
-          print('node process failed');
+          transform.logger.info('node process failed!');
 
           completer.complete(-1);
         });
 
         process.exitCode.then((int code) {
-          print('node process terminated with code $code');
+          transform.logger.info('node process terminated with code $code');
 
           transform.addOutput(new Asset.fromString(transform.primaryInput.id, allCss));
 
           completer.complete(code);
         }).catchError((e, [s]) {
           if (e is Error) {
-            print(e.stackTrace);
+            transform.logger.info(e.stackTrace.toString());
           }
         });
       }, onError: (error) {

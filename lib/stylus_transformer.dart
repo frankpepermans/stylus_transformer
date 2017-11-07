@@ -36,7 +36,7 @@ class StylusTransformer extends Transformer {
 
       Process.start(
           'node',
-          [path.absolute(_pathToBinary), '--import', 'styles\\_variables.styl', '--compress', '-p', 'styles'],
+          ['"${path.absolute(_pathToBinary)}"', '--import', 'styles\\_variables.styl', '--compress', '-p', 'styles'],
           workingDirectory: 'web'
       ).then((Process process) {
         process.stdout

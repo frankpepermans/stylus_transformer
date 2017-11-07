@@ -39,7 +39,7 @@ class InlineTransformer extends Transformer {
     transform.logger.info('node ${path.absolute(_pathToBinary)} --import styles\\_variables.styl --compress -p styles');
 
     Process.start('node', [
-      path.absolute(_pathToBinary),
+      '"${path.absolute(_pathToBinary)}"',
       '--import',
       'web\\styles\\_variables.styl',
       '--compress',

@@ -1,6 +1,6 @@
 name: stylus_transformer
 description: A pub transformer for Stylus files => css.
-version: 0.1.5
+version: 0.1.6
 author: Frank Pepermans <frank@igindo.com>
 
 environment:

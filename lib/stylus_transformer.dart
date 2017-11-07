@@ -31,11 +31,10 @@ class StylusTransformer extends Transformer {
       final Completer<int> completer = new Completer<int>();
       String allCss = '';
 
-      transform.logger.info('Obtaining Stylus binary from: ${path.relative(_pathToBinary)}');
-
       Process.start(
           'node',
-          [path.relative(_pathToBinary), '--import', 'web\\styles\\_variables.styl', '--compress', '-p', 'styles']
+          [path.relative('..\\$_pathToBinary'), '--import', 'styles\\_variables.styl', '--compress', '-p', 'styles'],
+          workingDirectory: 'web'
       ).then((Process process) {
         process.stdout
             .transform(UTF8.decoder)

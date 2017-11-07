@@ -54,6 +54,10 @@ class StylusTransformer extends Transformer {
           transform.addOutput(new Asset.fromString(transform.primaryInput.id, allCss));
 
           completer.complete(code);
+        }).catchError((e, [s]) {
+          if (e is Error) {
+            print(e.stackTrace);
+          }
         });
       }, onError: (error) {
         transform.logger.error(error.message);

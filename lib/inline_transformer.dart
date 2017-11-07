@@ -6,7 +6,6 @@ import 'package:barback/barback.dart';
 import 'package:path/path.dart' as path;
 
 class InlineTransformer extends Transformer {
-
   String _pathToBinary;
 
   InlineTransformer(BarbackSettings settings) : super() {
@@ -37,25 +36,33 @@ class InlineTransformer extends Transformer {
 
     transform.consumePrimary();
 
-    Process.start(
-        'node',
-        [path.absolute(_pathToBinary), '--import', 'web\\styles\\_variables.styl', '--compress', '-p', transform.primaryInput.id.path]
-    ).then((Process process) {
-      process.stdout
-        .transform(UTF8.decoder)
-        .listen((String css) {
-          final String newAssetPath = transform.primaryInput.id.path.replaceAll('.styl', '.css');
+    Process.start('node', [
+      path.absolute(_pathToBinary),
+      '--import',
+      'web\\styles\\_variables.styl',
+      '--compress',
+      '-p',
+      transform.primaryInput.id.path
+    ]).then((Process process) {
+      process.stdout.transform(UTF8.decoder).listen((String css) {
+        final String newAssetPath =
+            transform.primaryInput.id.path.replaceAll('.styl', '.css');
 
-          transform.logger.info('compiled successfully');
+        transform.logger.info('compiled successfully');
 
-          transform.addOutput(new Asset.fromString(new AssetId(transform.primaryInput.id.package, newAssetPath), css));
-        }, onError: ([Error error]) {
-          transform.logger.warning('compilation failed');
+        transform.addOutput(new Asset.fromString(
+            new AssetId(transform.primaryInput.id.package, newAssetPath), css));
+      }, onError: ([Error error]) {
+        transform.logger.warning('compilation failed');
 
-          completer.complete(-1);
-        });
+        completer.complete(-1);
+      });
 
-      process.exitCode.then(completer.complete);
+      process.exitCode.then(completer.complete).catchError((e, [s]) {
+        if (e is Error) {
+          print(e.stackTrace);
+        }
+      });
     }, onError: (error) {
       transform.logger.error(error.message);
 

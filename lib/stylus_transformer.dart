@@ -34,7 +34,7 @@ class StylusTransformer extends Transformer {
     if (transform.primaryInput.id.path.endsWith('compc_stylus.css')) {
       final Completer<int> completer = new Completer<int>();
       final List<String> params = <String>[
-        path.relative('..\\$_pathToBinary'),
+        path.relative('../$_pathToBinary'),
         '--import',
         path.join('styles', '_variables.styl'),
         '--compress',

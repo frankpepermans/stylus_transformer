@@ -21,8 +21,8 @@ class StylusTransformer extends Transformer {
 
     pathToBinaryTmp.replaceAll(new RegExp(r'[\\\/]{1}'), '|').split('|');
 
-    _pathToBinary = path.joinAll(
-        pathToBinaryTmp.replaceAll(new RegExp(r'[\\\/]{1}'), '|').split('|'));
+    _pathToBinary = path.joinAll(const <String>['..']..addAll(
+        pathToBinaryTmp.replaceAll(new RegExp(r'[\\\/]{1}'), '|').split('|')));
   }
 
   StylusTransformer.asPlugin(BarbackSettings settings) : this(settings);

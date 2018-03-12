@@ -21,7 +21,7 @@ class StylusTransformer extends Transformer {
 
     pathToBinaryTmp.replaceAll(new RegExp(r'[\\\/]{1}'), '|').split('|');
 
-    _pathToBinary = path.joinAll(const <String>['..']..addAll(
+    _pathToBinary = path.joinAll(<String>['..']..addAll(
         pathToBinaryTmp.replaceAll(new RegExp(r'[\\\/]{1}'), '|').split('|')));
   }
 
